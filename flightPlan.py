@@ -3,16 +3,33 @@
 #!flask/bin/python
 from flask import Flask , jsonify, abort, make_response, request, url_for
 import datetime
+import os
+import pymongo
+from pymongo import MongoClient
 
+#Setting addresses of the DB
+#Remote
+dbIp = os.environ['DB_PORT_27017_TCP_ADDR']
+dbPort = os.environ['DB_PORT_27017_TCP_PORT']
+#Local
+#dbIp = 'localhost'
+#dbPort = 27017
+
+client = MongoClient(dbIp,dbPort)
+db = client.FplDB
+dbFpls = db.fplCollection                #dbFpls is the collection that will handle all the plans
+
+#Setting database variables
+
+
+#-----------------------------
 app = Flask(__name__)
 
 #Creating memory array
 globalAirport = ''
 airportList = []
 airport = [{}]
-
 airportDictionary = {'dublinAirport': airport }
-
 airportList.append(airportDictionary)
 
 #Getting all airports flight plans
@@ -64,8 +81,14 @@ def create_plans(airportName):
         'departure': request.json.get('departure'),
         'route': request.json.get('route')
     }
-    expectedAirport.append(flightPlan)
-    return jsonify( { 'flightPlan': flightPlan } ), 201
+    expectedAirport.append(flightPlan)          #Adding in the list
+    #MONGODB
+    post = dbFpls.insert(flightPlan)                   #Adding in the MongoDB
+    ##
+    #return jsonify( { 'flightPlan': flightPlan } ), 201
+    #return JSONEncoder().encode( { 'flightPlan': flightPlan } )
+    return jsonify( { 'result': 'true' } )
+
   
 #Getting a specific Flight Plan
 @app.route('/<airportName>/<int:fpl_id>/', methods = ['GET'])
