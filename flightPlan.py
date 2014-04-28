@@ -9,11 +9,11 @@ from pymongo import MongoClient
 
 #Setting addresses of the DB
 #Remote
-#dbIp = os.environ['DB_PORT_27017_TCP_ADDR']
-#dbPort = os.environ['DB_PORT_27017_TCP_PORT']
+dbIp = os.environ['DB_PORT_27017_TCP_ADDR']
+dbPort = int(os.environ['DB_PORT_27017_TCP_PORT'])
 #Local
-dbIp = os.environ['DB_IP']
-dbPort = int(os.environ['DB_PORT'])
+#dbIp = os.environ['DB_IP']
+#dbPort = int(os.environ['DB_PORT'])
 
 client = MongoClient(dbIp,dbPort)
 db = client.FplDB
